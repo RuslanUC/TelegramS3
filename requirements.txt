@@ -1,0 +1,7 @@
+pyrogram
+quart
+uvicorn
+pymongo
+pymongo[srv]
+motor
+python-magic
