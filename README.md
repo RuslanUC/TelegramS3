@@ -28,7 +28,7 @@ Use telegram as s3 storage.
   6. Run `get_channel_id.py`, send `/id` command in your channel.
   7. Copy id to .env
   8. Create mongodb database named `s3`.
-  9. Run `setup_collections.py`.
+  9. Run `setup_database.py`.
   10. Run `create_accounts.py` to create access keys.
   11. Run `main.py`.
 
