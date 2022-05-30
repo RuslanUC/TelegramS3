@@ -5,3 +5,5 @@ pymongo
 pymongo[srv]
 motor
 python-magic
+tgcrypto
+dnspython
