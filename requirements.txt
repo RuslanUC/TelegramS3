@@ -8,3 +8,4 @@ python-magic
 tgcrypto
 dnspython
 gunicorn
+python-dotenv

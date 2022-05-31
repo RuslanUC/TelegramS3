@@ -40,7 +40,8 @@ async def startup():
         "S3_Bot",
         api_id=int(environ.get("API_ID", 0)),
         api_hash=environ.get("API_HASH"),
-        bot_token=environ.get("BOT_TOKEN")
+        bot_token=environ.get("BOT_TOKEN"),
+        in_memory=True
     )
     await bot.start()
     loop = get_event_loop()
@@ -255,6 +256,10 @@ async def getObject(bucket, file, user=None):
         name = r["name"].split("/")[-1]
         headers["Content-Disposition"] = f"attachment; filename={name}"
     return stream_file(r["parts"], bot), 200, headers
+
+@app.route("/healthcheck")
+def hc():
+    return ""
 
 if __name__ == "__main__":
     from uvicorn import run as urun
