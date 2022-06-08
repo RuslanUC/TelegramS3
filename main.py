@@ -204,7 +204,6 @@ async def putObject(bucket, file, user):
 @auth()
 @_lower(["bucket"])
 async def createMultipartUpload(bucket, file, user):
-    user = User("0042262b378a7f50000000001", "Test")
     if "uploads" in request.args:
         await mongo.buckets.delete_one({"bucket": bucket, "name": file, "owner": user.id})
         uploadId = str(uuid4())
