@@ -7,7 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-pys3server = "^0.1.0b5"
+pys3server = "^0.1.0b9"
 pyrotgfork = {extras = ["fast"], version = "^2.1.32.10"}
 pymongo = {extras = ["srv"], version = "^4.8.0"}
 motor = "^3.5.0"

@@ -561,13 +561,13 @@ fast = ["pytgcrypto (==1.2.6)", "uvloop (>0.18.0,<=0.19.0)"]
 
 [[package]]
 name = "pys3server"
-version = "0.1.0b7"
+version = "0.1.0b9"
 description = "Simple and extendable s3 server."
 optional = false
 python-versions = "<4.0,>=3.10"
 files = [
-    {file = "pys3server-0.1.0b7-py3-none-any.whl", hash = "sha256:f45ab9f61aa4ab844ba34d291fd453a378ae85fcf96b61d1e15c474b2746e81e"},
-    {file = "pys3server-0.1.0b7.tar.gz", hash = "sha256:cba2c2e8aa7c1d2b4794a79a93b50397889bc0caaecbd20e65b17df4700b9369"},
+    {file = "pys3server-0.1.0b9-py3-none-any.whl", hash = "sha256:4c2be16a49bc64188e259f91d26a7f59f1bd422b5b47b8a2a19b61267d0ad589"},
+    {file = "pys3server-0.1.0b9.tar.gz", hash = "sha256:380d9126c5915a497e8c739025366beb873ea80d07851e422fb20205b4d25dfe"},
 ]
 
 [package.dependencies]
@@ -862,4 +862,4 @@ test = ["Cython (>=0.29.36,<0.30.0)", "aiohttp (==3.9.0b0)", "aiohttp (>=3.8.1)"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "a3b2a4e945c78c6fcefa63da4cd89469344ded760be5609ea8f339499424483a"
+content-hash = "d092d1ca57bc811cada693a688bcd014633e9c211d1bfb151eafebc1288cb347"
