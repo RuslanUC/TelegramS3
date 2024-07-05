@@ -1,6 +1,6 @@
 # Telegram S3
 
-Use telegram as s3 storage.
+Use Telegram as s3 storage.
 
 <details>
 <summary><b>Enviroment variables you need to set:</b></summary>
@@ -22,12 +22,12 @@ Use telegram as s3 storage.
 
   1. Create bot in [BotFather](https://telegram.dog/botfather).
   2. Obtain API_ID and API_HASH on [my.telegram.org](https://my.telegram.org).
-  3. Create mongodb database on [MongoDB Cloud](https://cloud.mongodb.com/) (or use your server) and copy connect string.
+  3. Create a mongodb database on [MongoDB Cloud](https://cloud.mongodb.com/) (or use your server) and copy connect string.
   4. Insert all variables into .env
   5. Add bot to your channel with admin rights.
   6. Run `get_channel_id.py`, send `/id` command in your channel.
   7. Copy id to .env
-  8. Create mongodb database named `s3`.
+  8. Create a mongodb database named `s3`.
   9. Run `setup_database.py`.
   10. Run `create_accounts.py` to create access keys.
   11. Run `main.py`.

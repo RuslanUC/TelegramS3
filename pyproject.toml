@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "telegrams3"
+version = "0.1.0"
+description = "Use telegram as s3 storage."
+authors = ["RuslanUC <dev_ruslan_uc@protonmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pys3server = "^0.1.0b5"
+pyrotgfork = {extras = ["fast"], version = "^2.1.32.10"}
+pymongo = {extras = ["srv"], version = "^4.8.0"}
+motor = "^3.5.0"
+python-magic = "^0.4.27"
+python-dotenv = "^1.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

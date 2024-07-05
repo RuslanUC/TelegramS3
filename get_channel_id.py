@@ -1,8 +1,11 @@
-from pyrogram import Client, filters
-from os import environ
+from os import environ, getpid, kill
 from os.path import exists
+
+from pyrogram import Client, filters
+
 if exists(".env"):
     from dotenv import load_dotenv
+
     load_dotenv()
 
 bot = Client(
@@ -12,15 +15,16 @@ bot = Client(
     bot_token=environ.get("BOT_TOKEN")
 )
 
+
 @bot.on_message(filters.text)
 async def get_id(_cl, message):
-	if message.text.startswith("/id") or message.text.startswith("/channel"):
-		await message.reply(str(message.chat.id))
+    if message.text.startswith("/id") or message.text.startswith("/channel"):
+        await message.reply(str(message.chat.id))
+
 
 if __name__ == "__main__":
     try:
         print('Press Ctrl+C to stop.')
         bot.run()
     except KeyboardInterrupt:
-        exit()
-        pass
+        kill(getpid(), 9)
