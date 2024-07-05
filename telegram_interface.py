@@ -31,7 +31,8 @@ class TelegramReadStream(BaseReadStream):
         if not self._files:
             return None
 
-        while not (data := await self._files[0].read()) and len(self._files) > 0:
+        data = b""
+        while len(self._files) > 0 and not (data := await self._files[0].read()):
             self._files.pop(0)
 
         return data if data else None
@@ -47,7 +48,7 @@ class TelegramWriteStream(BaseWriteStream):
     DOCUMENT_SIZE = 1024 * 1024 * 8
 
     def __init__(
-            self, bot: Client, chat_id: str, part: int,
+            self, bot: Client, chat_id: int, part: int,
             upload_callback: Callable[[Message, int, str | None], Awaitable[None]]
     ):
         self._bot = bot
@@ -69,7 +70,12 @@ class TelegramWriteStream(BaseWriteStream):
             mime = from_buffer(self._buffer.read(1024), mime=True)
             self._buffer.seek(0)
 
-        message = await self._bot.send_document(self._chat_id, self._buffer, file_name="file", force_document=True)
+        message = await self._bot.send_document(
+            self._chat_id,
+            self._buffer,
+            file_name="file",
+            disable_content_type_detection=True,
+        )
         await self._upload_cb(message, size, mime)
 
     async def write(self, content: bytes | None) -> None:
@@ -83,14 +89,16 @@ class TelegramWriteStream(BaseWriteStream):
 
 
 class TelegramInterface(BaseInterface):
-    def __init__(self, api_id: int, api_hash: str, bot_token: str, chat_id: str, mongo_url: str):
+    def __init__(
+            self, api_id: int, api_hash: str, bot_token: str, chat_id: int, mongo_url: str, in_memory: bool = True,
+    ):
         self._chat_id = chat_id
         self._bot = Client(
             "S3Bot",
             api_id=api_id,
             api_hash=api_hash,
             bot_token=bot_token,
-            in_memory=True,
+            in_memory=in_memory,
         )
 
         self._mongo_url = mongo_url
@@ -107,7 +115,7 @@ class TelegramInterface(BaseInterface):
         if (key_id is None or not (creds := await self._mongo.users.find_one({"id": key_id}))) \
                 and not self._allow_public:
             bucket = object_.bucket if isinstance(object_, S3Object) else object_
-            raise AccessDenied(bucket, object_)
+            raise AccessDenied(bucket, object_ if isinstance(object_, S3Object) else None)
 
         return creds["key"]
 
@@ -137,7 +145,7 @@ class TelegramInterface(BaseInterface):
         return buckets
 
     async def list_bucket(self, key_id: str, bucket: Bucket) -> list[S3Object]:
-        if not await self._mongo.buckets.find_one({"name": bucket, "owner": key_id}):
+        if not await self._mongo.buckets.find_one({"name": bucket.name, "owner": key_id}):
             raise NoSuchKey(bucket)
 
         objects = []
@@ -156,7 +164,7 @@ class TelegramInterface(BaseInterface):
             raise NoSuchKey(bucket, object_)
         if not b["public"] and b["owner"] != key_id:
             raise AccessDenied(bucket, object_)
-        query = {"bucket": bucket, "name": object_.name, "incomplete": {"$exists": False}}
+        query = {"bucket": bucket.name, "name": object_.name, "incomplete": {"$exists": False}}
         if not (obj := await self._mongo.objects.find_one(query)):
             raise NoSuchKey(bucket, object_)
 
@@ -164,15 +172,15 @@ class TelegramInterface(BaseInterface):
 
     async def write_object(self, key_id: str, bucket: Bucket, object_name: str, size: int) -> TelegramWriteStream:
         async def upload_cb(message: Message, uploaded_size: int, mime_type: str | None) -> None:
-            if await self._mongo.objects.find_one({"name": object_name, "bucket": bucket}):
-                await self._mongo.objects.delete_one({"name": object_name, "bucket": bucket})
+            if await self._mongo.objects.find_one({"name": object_name, "bucket": bucket.name}):
+                await self._mongo.objects.delete_one({"name": object_name, "bucket": bucket.name})
             await self._mongo.objects.insert_one({
                 "name": object_name,
                 "owner": key_id,
                 "time": int(time()),
                 "size": uploaded_size,
                 "mime_type": mime_type,
-                "bucket": bucket,
+                "bucket": bucket.name,
                 #"hash": md5_checksum,  # TODO: calculate md5
                 "parts": [{
                     "part_id": 0,

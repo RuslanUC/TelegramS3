@@ -9,12 +9,14 @@ if exists(".env"):
     from dotenv import load_dotenv
     load_dotenv()
 
+
 app = S3Server(TelegramInterface(
     api_id=int(environ["API_ID"]),
     api_hash=environ["API_HASH"],
     bot_token=environ["BOT_TOKEN"],
-    chat_id=environ["CHAT_ID"],
+    chat_id=int(environ["CHAT_ID"]),
     mongo_url=environ["MONGODB"],
+    in_memory=environ.get("PYROGRAM_IN_MEMORY", "true").lower() == "true",
 ))
 
 
